@@ -116,7 +116,13 @@ $stream = [System.IO.File]::Open($resolvedPptx, [System.IO.FileMode]::Open, [Sys
 try {
     $zip = [System.IO.Compression.ZipArchive]::new($stream, [System.IO.Compression.ZipArchiveMode]::Read, $false)
     try {
-        $slideEntries = @($zip.Entries | Where-Object { $_.FullName -match '^ppt/slides/slide\d+\.xml$' } | Sort-Object FullName)
+        [xml]$activePresentation = $presentationXml
+        [xml]$activeRelationships = Read-ZipText -Path $resolvedPptx -EntryName 'ppt/_rels/presentation.xml.rels'
+        $activeIds = @($activePresentation.SelectNodes("//*[local-name()='sldIdLst' and namespace-uri()='http://schemas.openxmlformats.org/presentationml/2006/main']/*[local-name()='sldId']") | ForEach-Object { $_.GetAttribute('id','http://schemas.openxmlformats.org/officeDocument/2006/relationships') })
+        $slideEntries = @($activeRelationships.DocumentElement.ChildNodes | Where-Object { $_.Id -in $activeIds } | ForEach-Object {
+            $part = ([Uri]::new([Uri]'http://package/ppt/presentation.xml',[string]$_.Target)).AbsolutePath.TrimStart('/')
+            $zip.GetEntry($part)
+        })
         foreach ($entry in $slideEntries) {
             $entryStream = $entry.Open()
             try {
@@ -138,11 +144,14 @@ try {
                 $lstStyle = $shape.SelectSingleNode("./*[local-name()='txBody']/*[local-name()='lstStyle']")
                 $hasLocalGeometry = ($null -ne $spPr -and $spPr.HasChildNodes)
                 $hasLocalListStyle = ($null -ne $lstStyle -and $lstStyle.HasChildNodes)
-                if ($hasLocalGeometry -or $hasLocalListStyle) {
+                $localTextStyles = @($shape.SelectNodes("./*[local-name()='txBody']//*[local-name()='rPr' or local-name()='defRPr' or local-name()='endParaRPr'][@sz or @b or @i or @u or *[local-name()='latin' or local-name()='ea' or local-name()='cs' or local-name()='solidFill']]|./*[local-name()='txBody']/*[local-name()='p']/*[local-name()='pPr'][@algn]"))
+                $hasLocalTextStyle = $localTextStyles.Count -gt 0
+                if ($hasLocalGeometry -or $hasLocalListStyle -or $hasLocalTextStyle) {
                     $titleWarnings += [ordered]@{
                         slide = $entry.FullName
                         local_geometry = $hasLocalGeometry
                         local_list_style = $hasLocalListStyle
+                        local_text_style = $hasLocalTextStyle
                     }
                 }
             }

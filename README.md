@@ -4,6 +4,16 @@
 
 > 本仓库包含模板资源，仅限授权的内部用途；请保持仓库为私有，未经授权请勿分发。
 
+## 当前参考资源
+
+全部资源整合在同一份 `assets/reference.pptx`，共109页，不需要额外的图标库或展示方式库PPT。
+
+- 第1–56页：原公司模板；基础版式、目录和章节规则不变，第56页仍为结束页。
+- 第57–104页：已选的48种展示方式，统一为公司配色。
+- 第105–109页：5张图标素材页，含432个对象（336个原生形状、96个图片对象，包含重复和品牌图标）。
+
+只有需要的页面才进入成品。详细的选择优化、适用条件与调用注意事项见 `references/visual-selection.md`，准确页码和图标对象ID见 `references/visual-resources.json`。
+
 ## 调用
 
 在 Codex 中选择或调用已安装的此技能，然后描述希望制作的演示稿主题、受众、页数和已有内容。
@@ -29,7 +39,24 @@
     assets/preview.png               模板预览图
     references/ooxml-safety.md       母版、组合图形与标题联动规则
     references/template-map.md       目录、章节页和常用视觉资源图谱
-    scripts/                         结构一致性检查与原生 PNG 导出脚本
+    references/visual-selection.md  展示方式、图表和图标选择优化
+    references/visual-resources.json 精确页码、对象ID与来源索引
+    assets/resource-previews/        单一参考中的资源页预览
+    scripts/                         检索、选页、结构检查和原生PNG导出
+
+## 检索与选页
+
+在技能目录运行：
+
+```powershell
+pwsh.exe -NoLogo -NoProfile -File scripts/Get-MygeneVisualResource.ps1 -Kind method -Query 时间轴
+pwsh.exe -NoLogo -NoProfile -File scripts/Get-MygeneVisualResource.ps1 -Kind icon -Query 日历
+& ./scripts/Export-MygeneReferencePages.ps1 -Page 2,4,5,63,56 -OutputPath 'D:\工作目录\草稿.pptx'
+```
+
+选页只生成草稿，需要继续替换全部示例文字、数字、图表数据及引用。品牌图标默认不参与检索；无合适资源时可以自行绘制公司色的可编辑图形。图表不能只改文字或缓存而不更新工作簿。
+
+选择优化指PPT视觉资源，不包含医学突变位点筛选规则。原模板部分历史图表有缺省类别/稀疏缓存，参考库保留原生结构；调用为成品时用真实数据完整更新或重建并验证，不能为了通过检查虚构零值。
 
 ## 安装到 Codex
 

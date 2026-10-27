@@ -1,11 +1,19 @@
 ---
 name: artifact-template-mygene-ppt
-description: "Create or revise editable PowerPoint decks with the retained 迈景（Mygene）公司级PPT模板. Use when the user names Mygene/迈景, requests the company PPT template, or invokes $artifact-template-mygene-ppt. Preserves native masters, layouts, grouped artwork, linked title placeholders, directory pages, section dividers, typography, and brand colors; selects integrated diagrams, charts, timelines and icons by content semantics."
+description: "Create or iteratively revise editable 迈景（Mygene）company PowerPoint decks. Use when the user requests the Mygene company template, company PPT production, or $artifact-template-mygene-ppt. Combines retained native template and visual resources, PPT-Master collaboration when available, screenshot teaching layouts, and source-preserving revision and validation."
 ---
 
-# 迈景（Mygene）公司级PPT模板
+# 迈景（Mygene）公司级PPT制作
 
 使用保留的公司模板制作或修改可编辑 PowerPoint。保持母版联动、组合结构、品牌色和公司标识；不要把模板当成图片背景。常规制作不得修改参考文件；只有用户明确要求更新模板时，才编辑临时副本、验证后原子更新同一个技能。
+
+## 综合能力与职责
+
+- **公司模板层**：本仓库提供原生母版、版式、视觉资源、字体与品牌规则，决定成稿外观及结构保护要求。
+- **内容与视觉制作层**：吸收 PPT-Master 的内容梳理、叙事设计、图解制作、备注及质量检查方法；适合时调用已安装的 `ppt-master`。它是独立维护的可选协作技能，本仓库没有打包其完整源码或取代它的上游工作流。
+- **迭代交付层**：优先沿用用户确认的设计，基于最新稿做局部修改，保留用户手工编辑、动画和未涉及页面，交付可继续修改的PPTX。
+
+只调用本技能即可进入公司PPT工作流。PPT-Master可用时按需协作；缺少该依赖时使用本仓库的原生编辑路线，不自动安装或修改其他技能。职责与路由详见 [references/integrated-workflow.md](references/integrated-workflow.md)。
 
 ## 必读资源
 
@@ -14,6 +22,7 @@ description: "Create or revise editable PowerPoint decks with the retained 迈�
 3. 始终读取 `references/ooxml-safety.md`。
 4. 选择封面、目录、章节或原有图形时，读取 `references/template-map.md`。
 5. 选择展示方式、图表或图标时，完整读取 `references/visual-selection.md`，再按需要检索 `references/visual-resources.json` 并查看候选预览。不要只凭资源名称直接套用。
+6. 连续修改已有稿件、增删页或处理动画时，读取 [references/revision-and-review.md](references/revision-and-review.md)。使用用户截图讲解软件时，读取 [references/screenshot-teaching.md](references/screenshot-teaching.md)。
 
 ## 单一参考文件与资源位置
 
@@ -29,6 +38,8 @@ description: "Create or revise editable PowerPoint decks with the retained 迈�
 ## 内容与设计原则
 
 - 先确定叙事结构和信息关系，再选视觉资源。根据节点数量、读序、正文密度与横纵方向选择，不为填满图形虚构内容。
+- 沿用已经确认的风格和展示方向，不在每轮小改时重复发起风格确认。用户只要求大纲、部分章节或空白占位页时，按该范围完成，不自动填满整套内容。
+- 概念、能力演进和工具使用优先用关系图、流程、对话、时间轴、真实截图或前后对照；产品多维比较与真实数据仍适合原生表格。避免每页都用表格，也不为追求形式强行图解数据。
 - 允许自建可编辑表格、流程图、关系图和原生数据图表；沿用公司蓝、青绿、红色强调色、微软雅黑和页眉标识。
 - 没有比例或反馈关系不用环形结构；没有真实定量数据不用柱状、折线或饼图。图标不能替代事实和检测证据。
 - 模板不合适时创建简洁的新可编辑图形，不强求使用素材。品牌图标默认排除；同页图标风格、大小和视觉重量一致。
@@ -39,14 +50,11 @@ description: "Create or revise editable PowerPoint decks with the retained 迈�
 
 ## 推荐工作流
 
-1. 根据内容拟定逐页大纲，控制信息密度和章节层级。
-2. 对照原模板图谱选择结构页；按视觉选择规则检索2–3个正文候选，查看预览后选用。
-3. 以参考文件的原生OOXML包为基础输出新文件，不改写参考文件。可用 `scripts/Export-MygeneReferencePages.ps1` 选择唯一页码生成草稿；重复页另行克隆部件和关系ID。
-4. 只修改必要的文本和页面级内容，不整体重新序列化母版、版式、主题或复杂组合。
-5. 封面、目录、章节页复制原生页面，只替换文字；删减目录时删除整个多余组合，章节编号与正文保持一致。
-6. 复制新增展示页的原生结构后替换示例内容；图标按索引的 `NativeShapeId` 复制并保留依赖。普通标题不添加局部样式。
-7. 新建内容页关联原始内容版式；不合适的模板图形可重建正文可编辑对象，但保留公司视觉系统。
-8. 运行结构、图表数据及Presentations技能要求的检查，再用PowerPoint原生导出逐页复核并修复。
+1. **确定起点与范围**：新建稿以公司参考包为基础；已有稿以最新交付或用户更新的PPTX为起点。先核对文件、活动页顺序和修改范围，不从陈旧SVG整体重建已编辑稿。
+2. **组织内容**：结合受众、用途和时长拟定大纲；根据语义选择图解、截图或表格。已有设计共识可直接继续。新增设计与可选PPT-Master协作按 `integrated-workflow.md` 执行。
+3. **制作可编辑正文**：封面、目录、章节优先复制原生结构后换字；新增普通页关联原内容版式。图解可自建，标题继续写入真实占位符。正文统一使用模板的安全区与对齐基线，避免内容长期过低；不无差别移动Logo、页脚和背景。
+4. **局部修改与保留**：只改必要的文字、对象、页面和依赖；增删页时同步目录、章节、页码、备注和包元数据。原有母版、媒体和无关页面保持不变，保留未要求修改的动画。具体清单见 `revision-and-review.md`。
+5. **验证并交付**：先结构与字体/几何检查，再PowerPoint原生渲染。局部修改检查改动页并确认其他页无意外变化；全新或全面重排稿逐页检查。延续用户命名，固定主题前缀加递增版本，不反复更换文件名后缀描述。
 
 ## 验收标准
 
@@ -55,6 +63,7 @@ description: "Create or revise editable PowerPoint decks with the retained 迈�
 - 普通标题为 `p:ph type="title"`，`p:spPr` 与 `a:lstStyle` 为空，段落/文字运行不覆盖母版字体、字号、颜色等样式。
 - 表格、数据图表和流程图保持可编辑；图片图标不宣称路径可编辑。数值、单位、比例、时间跨度与正文一致。
 - 无不相关图标、示例数字或引用残留、文本溢出、遮挡、异常换行；结构检查不能替代视觉检查。
+- 原生表格文字拥挤或自动检查提示溢出时，可用 `scripts/Test-MygeneNativeTableText.ps1` 测量实际单元格文字高度，并结合原生预览处理；不得仅为消除警告篡改验证器或伪造通过。
 - 原参考第46/48/49页的历史图表示例有缺省类别或稀疏缓存，严格图表检查可能不支持。参考库保留原生结构；制作成品时用真实数据重建或完整更新并验证，不虚构零值、不跳过成品图表检查。新增第99–104页图表已通过结构和嵌入工作簿校验，仍须在替换数据后重新验证。
 
 ## 工具调用

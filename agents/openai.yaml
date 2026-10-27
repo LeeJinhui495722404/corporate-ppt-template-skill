@@ -1,8 +1,8 @@
 interface:
-  display_name: "迈景（Mygene）公司级PPT模板"
-  short_description: "使用迈景公司母版、目录、章节页和视觉资源制作专业PPT演示文稿"
+  display_name: "迈景（Mygene）公司级PPT制作"
+  short_description: "融合迈景公司模板、PPT-Master方法与迭代习惯，制作可编辑PPT"
   icon_large: "./assets/preview.png"
   brand_color: "#356FA3"
-  default_prompt: "使用 $artifact-template-mygene-ppt 制作一份迈景公司PPT；按内容选择模板视觉资源，保留母版联动，并用PowerPoint原生渲染检查。"
+  default_prompt: "使用 $artifact-template-mygene-ppt 制作或修改迈景公司PPT，按内容选择图解与截图，基于最新稿保留母版、手工修改和动画，并检查原生渲染。"
 policy:
   allow_implicit_invocation: true

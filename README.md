@@ -1,6 +1,8 @@
-# 公司级 PPT 模板技能
+# 公司级 PPT 制作技能
 
 用于基于随附的公司 PowerPoint 模板创建或修改可编辑演示稿。技能保留原生母版、版式、组合图形、公司主题色和标题占位符联动，适用于内部汇报、技术交流和方案演示。
+
+当前是三个部分组成的综合入口：公司模板与视觉资源、可选的[PPT-Master](https://github.com/hugohe3/ppt-master)内容/视觉制作协作、以及连续修改形成的交付习惯。PPT-Master作为独立技能维护，本仓库不内嵌其全部源码；没有该依赖也可按本技能的原生路线制作和修改。模板及素材的原有授权保持不变。
 
 > 本仓库包含模板资源，仅限授权的内部用途；请保持仓库为私有，未经授权请勿分发。
 
@@ -30,6 +32,9 @@
 - 环形图仅用于真实的组成或循环关系；数据图表仅用于真实的定量数据。
 - 目录、章节页与内容结构相匹配。短篇汇报不强制增加目录；有三个及以上自然章节或用户明确要求时，可加入目录和章节页。
 - 完成后运行结构检查，并用 Microsoft PowerPoint 原生渲染复核，避免只依赖第三方渲染器。
+- 连续修改基于最新PPTX，保留用户手改、原有动画和未涉及页面，不从旧SVG重建整稿；沿用已确认风格和固定文件名前缀。
+- 概念、流程和操作优先用合适的图解与截图，多产品多维比较仍用原生表格；避免整套页面形式单一。
+- 截图教学可居中框选功能区并就近标注，也可对照展示输入、操作和结果。保留原图，使用原生裁切，新增说明保持可编辑。
 
 ## 文件结构
 
@@ -41,6 +46,9 @@
     references/template-map.md       目录、章节页和常用视觉资源图谱
     references/visual-selection.md  展示方式、图表和图标选择优化
     references/visual-resources.json 精确页码、对象ID与来源索引
+    references/integrated-workflow.md 公司模板与PPT-Master协作、任务路由
+    references/revision-and-review.md 最新稿局部修改、动画、版本与验收
+    references/screenshot-teaching.md 软件截图、就近标注与操作示例
     assets/resource-previews/        单一参考中的资源页预览
     scripts/                         检索、选页、结构检查和原生PNG导出
 
@@ -73,3 +81,11 @@ pwsh.exe -NoLogo -NoProfile -File scripts/Get-MygeneVisualResource.ps1 -Kind ico
 再运行原生导出脚本，使用本机 Microsoft PowerPoint 导出 PNG 预览，以 PowerPoint 的渲染结果作为最终视觉验收依据。
 
 若第三方渲染器与 PowerPoint 的效果不一致，以 PowerPoint 原生渲染为准。
+
+原生表格有文字高度/溢出疑问时，可只读测量指定页面，不保存源稿：
+
+```powershell
+pwsh.exe -NoLogo -NoProfile -File scripts/Test-MygeneNativeTableText.ps1 -PptxPath '输出文件.pptx' -Page 5 -ReportPath '构建目录/表格检查.json'
+```
+
+脚本返回实际单元格文字高度，不输出业务正文；没有表格、无法测量或高度溢出时返回失败。测量结果仍须结合原生预览判断宽度、图片、遮挡和可读性。
